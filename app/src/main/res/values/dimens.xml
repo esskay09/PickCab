@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="dimen_input_destination_start">8dp</dimen>
+    <dimen name="dimen_input_destination_end">8dp</dimen>
+    <dimen name="dimen_book_button_bottom">16dp</dimen>
+    <dimen name="dimen_input_destination_bottom">8dp</dimen>
+    <dimen name="dimen_tick_anim_radius" >160dp</dimen>
+    <dimen name="dimen_tick_anim_container">240dp</dimen>
+    <dimen name="dimen_progressview_identity_margin">32dp</dimen>
+    <dimen name="dimen_contact_us_bottom_margin">8dp</dimen>
+    <dimen name="dimen_card_view_booking_details_top_bottom">16dp</dimen>
+    <dimen name="tick_anim_container_radius">550dp</dimen>
+    <dimen name="booking_details_container_margin_from_booking_confirmed">16dp</dimen>
+</resources>
