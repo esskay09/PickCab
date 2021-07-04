@@ -1,10 +1,10 @@
 package com.terrranullius.pickcab.util
 
-sealed class Result<out R> {
+sealed class Resource<out R> {
 
-    data class Success<out T>(val data: T) : Result<T>()
-    data class Error(val exception: Exception) : Result<Nothing>()
-    object Loading : Result<Nothing>()
+    data class Success<out T>(val data: T) : Resource<T>()
+    data class Error(val exception: Exception) : Resource<Nothing>()
+    object Loading : Resource<Nothing>()
 
     override fun toString(): String {
         return when (this) {

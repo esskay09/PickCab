@@ -14,7 +14,7 @@ import com.google.android.material.textfield.TextInputLayout
 import com.terrranullius.pickcab.R
 import com.terrranullius.pickcab.other.EventObserver
 import com.terrranullius.pickcab.ui.viewmodels.MainViewModel
-import com.terrranullius.pickcab.util.Result
+import com.terrranullius.pickcab.util.Resource
 
 class Login : Fragment() {
     lateinit var mobile_number: EditText
@@ -54,7 +54,7 @@ class Login : Fragment() {
             mobile_number.setText("")
 
             mobile.toLongOrNull()?.let {
-                 viewModel.startVerification(it)
+                viewModel.startVerification(it)
             } ?: return@setOnClickListener
         }
 
@@ -62,8 +62,12 @@ class Login : Fragment() {
     }
 
     private fun setObservers() {
-        viewModel.phoneNumberSetEvent.observe(viewLifecycleOwner, EventObserver{
-           //TODO
+        viewModel.verificationStartEvent.observe(viewLifecycleOwner, EventObserver {
+            when (it) {
+                is Resource.Success -> { findNavController().navigate(R.id.action_login_to_OTPConfirmation) }
+                is Resource.Error -> { }
+                is Resource.Loading -> { }
+            }
 
             findNavController().navigate(R.id.action_login_to_OTPConfirmation)
         })

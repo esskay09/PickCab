@@ -13,7 +13,9 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.terrranullius.pickcab.other.EventObserver
 import com.terrranullius.pickcab.ui.viewmodels.MainViewModel
+import com.terrranullius.pickcab.util.Resource
 
 class OTPConfirmation : Fragment(), View.OnClickListener {
     lateinit var otp1: EditText
@@ -65,6 +67,24 @@ class OTPConfirmation : Fragment(), View.OnClickListener {
         otp6.addTextChangedListener(EditTextWatcher(otp6))
         verify.setOnClickListener(this)
         edit.setOnClickListener(this)
+        
+        setObservers()
+    }
+
+    private fun setObservers() {
+        viewModel.otpSetEvent.observe(viewLifecycleOwner, EventObserver {
+            when (it) {
+                is Resource.Success -> {
+                    findNavController().navigate(R.id.action_OTPConfirmation_to_mainFragment)
+                }
+                is Resource.Error -> {
+
+                }
+                Resource.Loading -> {
+
+                }
+            }
+        })
     }
 
 

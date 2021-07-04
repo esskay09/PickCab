@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
 import com.terrranullius.pickcab.R
 import com.terrranullius.pickcab.databinding.FragmentPhoneLoginBinding
 import com.terrranullius.pickcab.other.EventObserver
@@ -64,7 +63,7 @@ class PhoneLoginFragment : Fragment() {
         }
 
     private fun setObservers() {
-        viewModel.phoneNumberSetEvent.observe(viewLifecycleOwner, EventObserver {
+        viewModel.verificationStartEvent.observe(viewLifecycleOwner, EventObserver {
 //            findNavController().navigate(R.id.action_phoneLoginFragment_to_mainFragment)
         })
     }

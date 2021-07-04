@@ -15,13 +15,13 @@ import retrofit2.http.POST
 private const val BASE_URL = "https://pickcab.herokuapp.com/"
 
 private val moshi = Moshi.Builder()
-    .add(KotlinJsonAdapterFactory())
+    .add(LiveDataCallAdapterFactory())
     .build()
 
 
 private val retrofit = Retrofit.Builder()
-    .addCallAdapterFactory(LiveDataCallAdapterFactory())
     .addConverterFactory(MoshiConverterFactory.create(moshi))
+    .addCallAdapterFactory(LiveDataCallAdapterFactory())
     .baseUrl(BASE_URL)
     .build()
 

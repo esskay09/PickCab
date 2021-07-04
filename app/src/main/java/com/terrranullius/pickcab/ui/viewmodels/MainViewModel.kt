@@ -11,6 +11,7 @@ import com.terrranullius.pickcab.other.Event
 import com.terrranullius.pickcab.util.ApiEmptyResponse
 import com.terrranullius.pickcab.util.ApiErrorResponse
 import com.terrranullius.pickcab.util.ApiSuccessResponse
+import com.terrranullius.pickcab.util.Resource
 import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
@@ -54,14 +55,14 @@ class MainViewModel : ViewModel() {
             _identitySetEvent.value = Event(Unit)
         }
 
-    private val _phoneNumberSetEvent = MutableLiveData<Event<Result<Long>>>()
-    val phoneNumberSetEvent: LiveData<Event<Result<Long>>>
+    private val _phoneNumberSetEvent = MutableLiveData<Event<Resource<Long>>>()
+    val verificationStartEvent: LiveData<Event<Resource<Long>>>
         get() = _phoneNumberSetEvent
 
 
     //TODO return verified number
-    private val _otpSetEvent = MutableLiveData<Event<Result<Long>>>()
-    val otpSetEvent: LiveData<Event<Result<Long>>>
+    private val _otpSetEvent = MutableLiveData<Event<Resource<Long>>>()
+    val otpSetEvent: LiveData<Event<Resource<Long>>>
         get() = _otpSetEvent
 
     private val _destinationsSetEvent = MutableLiveData<Event<Unit>>()
@@ -94,16 +95,16 @@ class MainViewModel : ViewModel() {
 
             when (response.value) {
                 is ApiSuccessResponse -> {
-                    _phoneNumberSetEvent.value = Event(Result.success(phonenumber))
+                    _phoneNumberSetEvent.value = Event(Resource.Success(phonenumber))
                 }
                 is ApiEmptyResponse -> {
-                    _phoneNumberSetEvent.value = Event(Result.failure(Exception()))
+                    _phoneNumberSetEvent.value = Event(Resource.Error(Exception()))
                 }
                 is ApiErrorResponse -> {
-                    _phoneNumberSetEvent.value = Event(Result.failure(Exception()))
+                    _phoneNumberSetEvent.value = Event(Resource.Error(Exception()))
                 }
                 null -> {
-                    _phoneNumberSetEvent.value = Event(Result.failure(Exception()))
+                    _phoneNumberSetEvent.value = Event(Resource.Error(Exception()))
                 }
             }
         }
@@ -116,19 +117,19 @@ class MainViewModel : ViewModel() {
             when (response.value) {
                 is ApiSuccessResponse -> {
                     if ((response.value as ApiSuccessResponse<ServerResponse>).body.result == "not verified") {
-                        _otpSetEvent.value = Event(Result.failure(NullPointerException()))
+                        _otpSetEvent.value = Event(Resource.Error(NullPointerException()))
                     } else if ((response.value as ApiSuccessResponse<ServerResponse>).body.result == "verified") {
-                        _otpSetEvent.value = Event(Result.success(phonenumber))
+                        _otpSetEvent.value = Event(Resource.Success(phonenumber))
                     }
                 }
                 is ApiEmptyResponse -> {
-                    _otpSetEvent.value = Event(Result.failure(NullPointerException()))
+                    _otpSetEvent.value = Event(Resource.Error(NullPointerException()))
                 }
                 is ApiErrorResponse -> {
-                    _otpSetEvent.value = Event(Result.failure(NullPointerException()))
+                    _otpSetEvent.value = Event(Resource.Error(NullPointerException()))
                 }
                 null -> {
-                    _otpSetEvent.value = Event(Result.failure(NullPointerException()))
+                    _otpSetEvent.value = Event(Resource.Error(NullPointerException()))
                 }
             }
         }
