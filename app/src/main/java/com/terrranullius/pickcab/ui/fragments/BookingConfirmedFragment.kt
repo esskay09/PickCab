@@ -15,8 +15,7 @@ import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.terrranullius.pickcab.R
 import com.terrranullius.pickcab.databinding.FragmentBookingConfirmedBinding
 import com.terrranullius.pickcab.network.ConfirmationRequest
-import com.terrranullius.pickcab.network.SmsApi
-import com.terrranullius.pickcab.other.getFormattedConfirmationMessage
+import com.terrranullius.pickcab.network.PickCabApi
 import com.terrranullius.pickcab.ui.viewmodels.MainViewModel
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.delay
@@ -53,7 +52,7 @@ class BookingConfirmedFragment : Fragment() {
 
             withContext(IO){
                 try {
-                    SmsApi.retrofitService.sendConfirmation(
+                    PickCabApi.retrofitService.sendConfirmation(
                         ConfirmationRequest(
                             number = viewModel.phonenumber,
                             startDate = viewModel.startDate,

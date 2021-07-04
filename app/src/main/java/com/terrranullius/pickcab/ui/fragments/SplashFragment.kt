@@ -26,7 +26,7 @@ class SplashFragment : Fragment() {
 
         lifecycleScope.launch {
             delay(1000L)
-            findNavController().navigate(R.id.action_splashFragment_to_phoneLoginFragment)
+            findNavController().navigate(R.id.action_splashFragment_to_login)
         }
 
     }

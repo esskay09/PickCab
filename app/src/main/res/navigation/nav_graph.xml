@@ -8,43 +8,22 @@
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.terrranullius.pickcab.ui.fragments.MainFragment"
-        android:label="MainFragment"
-        />
+        android:label="MainFragment" />
     <fragment
         android:id="@+id/splashFragment"
         android:name="com.terrranullius.pickcab.ui.fragments.SplashFragment"
         android:label="fragment_splash"
-        tools:layout="@layout/fragment_splash" >
+        tools:layout="@layout/fragment_splash">
         <action
-            android:id="@+id/action_splashFragment_to_phoneLoginFragment"
-            app:destination="@id/phoneLoginFragment"
-            app:enterAnim="@anim/anim_slide_in"
-            app:exitAnim="@anim/anim_slide_out"
-            app:launchSingleTop="true"
-            app:popEnterAnim="@anim/anim_slide_in"
-            app:popExitAnim="@anim/anim_slide_out"
+            android:id="@+id/action_splashFragment_to_login"
+            app:destination="@id/login"
             app:popUpTo="@id/splashFragment"
-            app:popUpToInclusive="true" />
-    </fragment>
-    <fragment
-        android:id="@+id/phoneLoginFragment"
-        android:name="com.terrranullius.pickcab.ui.fragments.PhoneLoginFragment"
-        android:label="PhoneLoginFragment" >
-        <action
-            android:id="@+id/action_phoneLoginFragment_to_mainFragment"
-            app:destination="@id/mainFragment"
-            app:enterAnim="@anim/anim_slide_in"
-            app:exitAnim="@anim/anim_slide_in"
-            app:launchSingleTop="true"
-            app:popEnterAnim="@anim/anim_slide_in"
-            app:popExitAnim="@anim/anim_slide_out"
-            app:popUpTo="@id/phoneLoginFragment"
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/bookingConfirmedFragment"
         android:name="com.terrranullius.pickcab.ui.fragments.BookingConfirmedFragment"
-        android:label="BookingConfirmedFragment" >
+        android:label="BookingConfirmedFragment">
         <action
             android:id="@+id/action_bookingConfirmedFragment_to_mainFragment"
             app:destination="@id/mainFragment"
@@ -61,4 +40,27 @@
         app:popExitAnim="@anim/anim_slide_out"
         app:popUpTo="@id/mainFragment"
         app:popUpToInclusive="false" />
+    <fragment
+        android:id="@+id/login"
+        android:name="com.terrranullius.pickcab.ui.fragments.Login"
+        android:label="Login">
+        <action
+            android:id="@+id/action_login_to_OTPConfirmation"
+            app:destination="@id/OTPConfirmation" />
+    </fragment>
+    <fragment
+        android:id="@+id/OTPConfirmation"
+        android:name="com.terrranullius.pickcab.ui.fragments.OTPConfirmation"
+        android:label="OTPConfirmation">
+        <action
+            android:id="@+id/action_OTPConfirmation_to_mainFragment"
+            app:destination="@id/mainFragment"
+            app:popUpTo="@id/OTPConfirmation"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_OTPConfirmation_to_login"
+            app:destination="@id/login"
+            app:popUpTo="@id/OTPConfirmation"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>

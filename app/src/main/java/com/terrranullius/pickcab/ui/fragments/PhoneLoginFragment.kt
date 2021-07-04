@@ -55,7 +55,7 @@ class PhoneLoginFragment : Fragment() {
         return if (number?.length == 10
             || number?.length == 12
         ) {
-            viewModel.phonenumber = number
+            viewModel.phonenumber = number.toLong()
             true
         } else {
             binding.textInputLayout.error = "Please enter a correct number"
@@ -65,7 +65,7 @@ class PhoneLoginFragment : Fragment() {
 
     private fun setObservers() {
         viewModel.phoneNumberSetEvent.observe(viewLifecycleOwner, EventObserver {
-            findNavController().navigate(R.id.action_phoneLoginFragment_to_mainFragment)
+//            findNavController().navigate(R.id.action_phoneLoginFragment_to_mainFragment)
         })
     }
 }

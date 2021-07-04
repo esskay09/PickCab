@@ -11,4 +11,11 @@
     <color name="blue_primary">#FF2196F3</color>
     <color name="blue_primary_dark">#FF1976D2</color>
     <color name="blue_accent">#FF448AFF</color>
+
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+
+    <color name="grey1">#4f4f4f</color>
+    <color name="orange">#F4511E</color>
 </resources>

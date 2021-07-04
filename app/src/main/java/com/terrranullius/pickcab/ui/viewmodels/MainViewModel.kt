@@ -4,17 +4,21 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.terrranullius.pickcab.network.PickCabApi
+import com.terrranullius.pickcab.network.ServerResponse
 import com.terrranullius.pickcab.other.Event
+import com.terrranullius.pickcab.util.ApiEmptyResponse
+import com.terrranullius.pickcab.util.ApiErrorResponse
+import com.terrranullius.pickcab.util.ApiSuccessResponse
+import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
 
     var capturedPhotoUri: Uri? = null
 
-    var phonenumber = ""
-        set(value) {
-            field = value
-            _phoneNumberSetEvent.value = Event(Unit)
-        }
+    var phonenumber = 0L
+
     var startDestination = ""
     var endDestination = ""
         set(value) {
@@ -50,9 +54,15 @@ class MainViewModel : ViewModel() {
             _identitySetEvent.value = Event(Unit)
         }
 
-    private val _phoneNumberSetEvent = MutableLiveData<Event<Unit>>()
-    val phoneNumberSetEvent: LiveData<Event<Unit>>
+    private val _phoneNumberSetEvent = MutableLiveData<Event<Result<Long>>>()
+    val phoneNumberSetEvent: LiveData<Event<Result<Long>>>
         get() = _phoneNumberSetEvent
+
+
+    //TODO return verified number
+    private val _otpSetEvent = MutableLiveData<Event<Result<Long>>>()
+    val otpSetEvent: LiveData<Event<Result<Long>>>
+        get() = _otpSetEvent
 
     private val _destinationsSetEvent = MutableLiveData<Event<Unit>>()
     val destinationsSetEvent: LiveData<Event<Unit>>
@@ -74,4 +84,54 @@ class MainViewModel : ViewModel() {
     val identitySetEvent: LiveData<Event<Unit>>
         get() = _identitySetEvent
 
+    fun startVerification(number: Long) {
+
+        phonenumber = number
+
+        viewModelScope.launch {
+
+            val response = PickCabApi.retrofitService.startVerification(phonenumber)
+
+            when (response.value) {
+                is ApiSuccessResponse -> {
+                    _phoneNumberSetEvent.value = Event(Result.success(phonenumber))
+                }
+                is ApiEmptyResponse -> {
+                    _phoneNumberSetEvent.value = Event(Result.failure(Exception()))
+                }
+                is ApiErrorResponse -> {
+                    _phoneNumberSetEvent.value = Event(Result.failure(Exception()))
+                }
+                null -> {
+                    _phoneNumberSetEvent.value = Event(Result.failure(Exception()))
+                }
+            }
+        }
+    }
+
+    fun verifyOtp(otp: Int) {
+        viewModelScope.launch {
+
+            val response = PickCabApi.retrofitService.verifyOtp(phonenumber, otp)
+            when (response.value) {
+                is ApiSuccessResponse -> {
+                    if ((response.value as ApiSuccessResponse<ServerResponse>).body.result == "not verified") {
+                        _otpSetEvent.value = Event(Result.failure(NullPointerException()))
+                    } else if ((response.value as ApiSuccessResponse<ServerResponse>).body.result == "verified") {
+                        _otpSetEvent.value = Event(Result.success(phonenumber))
+                    }
+                }
+                is ApiEmptyResponse -> {
+                    _otpSetEvent.value = Event(Result.failure(NullPointerException()))
+                }
+                is ApiErrorResponse -> {
+                    _otpSetEvent.value = Event(Result.failure(NullPointerException()))
+                }
+                null -> {
+                    _otpSetEvent.value = Event(Result.failure(NullPointerException()))
+                }
+            }
+        }
+    }
 }
+

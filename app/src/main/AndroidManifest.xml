@@ -16,7 +16,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_taxi_circle"
         android:supportsRtl="true"
-        android:theme="@style/Theme.PickCab">
+        android:theme="@style/LoginTheme">
         <activity android:name=".ui.MainActivity"
             android:screenOrientation="portrait"
         android:windowSoftInputMode="adjustResize|stateHidden">
