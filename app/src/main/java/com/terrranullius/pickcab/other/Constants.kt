@@ -6,4 +6,6 @@ object Constants {
     const val ADMIN_NUMBER = "9334805466"
     const val ADMIN_EMAIL = "eskay099@gmail.com@gmail.com"
     const val CAPTURE_IMAGE_IDENTITY = 135
+    const val PREF_VERIFIED = "isVerified"
+    const val PREFS_DIR = "Users"
 }

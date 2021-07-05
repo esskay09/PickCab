@@ -1,5 +1,6 @@
 package com.terrranullius.pickcab.ui.fragments
 
+import android.content.Context
 import androidx.cardview.widget.CardView
 import android.os.Bundle
 import com.terrranullius.pickcab.R
@@ -14,6 +15,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.terrranullius.pickcab.other.Constants
+import com.terrranullius.pickcab.other.Constants.PREFS_DIR
+import com.terrranullius.pickcab.other.Constants.PREF_VERIFIED
 import com.terrranullius.pickcab.other.EventObserver
 import com.terrranullius.pickcab.ui.viewmodels.MainViewModel
 import com.terrranullius.pickcab.util.Resource
@@ -78,7 +82,7 @@ class OTPConfirmation : Fragment(), View.OnClickListener {
         viewModel.otpSetEvent.observe(viewLifecycleOwner, EventObserver {
             when (it) {
                 is Resource.Success -> {
-                    findNavController().navigate(R.id.action_OTPConfirmation_to_mainFragment)
+                    onOtpVerified()
                 }
                 is Resource.Error -> {
 
@@ -88,6 +92,14 @@ class OTPConfirmation : Fragment(), View.OnClickListener {
                 }
             }
         })
+    }
+
+    private fun onOtpVerified() {
+        val prefs = requireContext().getSharedPreferences(PREFS_DIR, Context.MODE_PRIVATE)
+        val editor = prefs.edit()
+        editor.putBoolean(PREF_VERIFIED, true)
+        editor.apply()
+        findNavController().navigate(R.id.action_OTPConfirmation_to_mainFragment)
     }
 
 
