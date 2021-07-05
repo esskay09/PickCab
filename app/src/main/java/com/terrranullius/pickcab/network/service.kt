@@ -28,14 +28,14 @@ private val retrofit = Retrofit.Builder()
 interface PickCabApiService {
 
     @POST("SendConfirmation")
-    suspend fun sendConfirmation(
+    fun sendConfirmation(
         @Body
         request: ConfirmationRequest
     ) : LiveData<GenericApiResponse<ServerResponse>>
 
     @POST("verify/number/otp")
     @FormUrlEncoded
-    suspend fun verifyOtp(
+    fun verifyOtp(
         @Field("number") number: Long,
         @Field("otp") otp: Int
     ) : LiveData<GenericApiResponse<ServerResponse>>

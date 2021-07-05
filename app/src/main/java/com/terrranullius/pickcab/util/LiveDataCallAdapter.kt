@@ -1,5 +1,6 @@
 package com.terrranullius.pickcab.util
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import retrofit2.Call
 import retrofit2.CallAdapter
@@ -14,6 +15,8 @@ class LiveDataCallAdapter<R>(private val responseType: Type) :
     override fun responseType() = responseType
 
     override fun adapt(call: Call<R>): LiveData<GenericApiResponse<R>> {
+        Log.d("sha", "LiveDataCallAdapter adapt called")
+
         return object : LiveData<GenericApiResponse<R>>() {
             private var started = AtomicBoolean(false)
             override fun onActive() {
@@ -28,6 +31,8 @@ class LiveDataCallAdapter<R>(private val responseType: Type) :
                             postValue(GenericApiResponse.create(throwable))
                         }
                     })
+                } else {
+                    Log.d("sha", "LiveDataCallAdapter expected value false")
                 }
             }
         }

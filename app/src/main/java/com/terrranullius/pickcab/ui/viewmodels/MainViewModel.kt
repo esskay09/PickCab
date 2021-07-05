@@ -13,6 +13,7 @@ import com.terrranullius.pickcab.util.ApiEmptyResponse
 import com.terrranullius.pickcab.util.ApiErrorResponse
 import com.terrranullius.pickcab.util.ApiSuccessResponse
 import com.terrranullius.pickcab.util.Resource
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
@@ -90,53 +91,58 @@ class MainViewModel : ViewModel() {
 
         phonenumber = number
 
-        val response = PickCabApi.retrofitService.startVerification(phonenumber)
+        _phoneNumberSetEvent.value = Event(Resource.Success(phonenumber))
 
-        Log.d("sha", response.value.toString())
+      /*     PickCabApi.retrofitService.startVerification(phonenumber).observeForever{
 
-        when (response.value) {
-            is ApiSuccessResponse -> {
-                _phoneNumberSetEvent.value = Event(Resource.Success(phonenumber))
-            }
-            is ApiEmptyResponse -> {
-                Log.d("api error", response.value.toString())
-                _phoneNumberSetEvent.value = Event(Resource.Error(Exception()))
-            }
-            is ApiErrorResponse -> {
-                Log.d("api error", response.value.toString())
-                _phoneNumberSetEvent.value = Event(Resource.Error(Exception()))
-            }
-            null -> {
-                Log.d("api error", response.value.toString())
-                _phoneNumberSetEvent.value = Event(Resource.Error(Exception()))
-            }
-        }
+               Log.d("sha","startverification response : $it")
+
+               when(it){
+                   is ApiSuccessResponse -> {
+                       _phoneNumberSetEvent.value = Event(Resource.Success(phonenumber))
+                   }
+                   is ApiEmptyResponse -> {
+                       _phoneNumberSetEvent.value = Event(Resource.Error(Exception()))
+                   }
+                   is ApiErrorResponse -> {
+                       _phoneNumberSetEvent.value = Event(Resource.Error(Exception()))
+                   }
+                   null -> {
+                       _phoneNumberSetEvent.value = Event(Resource.Error(Exception()))
+                   }
+               }
+          }*/
 
     }
 
     fun verifyOtp(otp: Int) {
-        viewModelScope.launch {
 
-            val response = PickCabApi.retrofitService.verifyOtp(phonenumber, otp)
-            when (response.value) {
-                is ApiSuccessResponse -> {
-                    if ((response.value as ApiSuccessResponse<ServerResponse>).body.result == "not verified") {
-                        _otpSetEvent.value = Event(Resource.Error(NullPointerException()))
-                    } else if ((response.value as ApiSuccessResponse<ServerResponse>).body.result == "verified") {
-                        _otpSetEvent.value = Event(Resource.Success(phonenumber))
+        Log.d("sha", "number: $phonenumber")
+
+            /*PickCabApi.retrofitService.verifyOtp(phonenumber, otp).observeForever{
+
+                Log.d("sha","verify otp response : $it")
+
+                when(it){
+                    is ApiSuccessResponse -> {
+                        if (it.body.result == "not verified" || it.body.result == "error") {
+                            _otpSetEvent.value = Event(Resource.Error(NullPointerException()))
+                        } else if (it.body.result == "verified") {
+                            _otpSetEvent.value = Event(Resource.Success(phonenumber))
+                        }
                     }
+                    is ApiEmptyResponse -> {
+                        _otpSetEvent.value = Event(Resource.Error(NullPointerException()))
+                    }
+                    is ApiErrorResponse -> {
+                        _otpSetEvent.value = Event(Resource.Error(NullPointerException()))
+                    }
+                    null -> {
+                        _otpSetEvent.value = Event(Resource.Error(NullPointerException()))
+                    }
+
                 }
-                is ApiEmptyResponse -> {
-                    _otpSetEvent.value = Event(Resource.Error(NullPointerException()))
-                }
-                is ApiErrorResponse -> {
-                    _otpSetEvent.value = Event(Resource.Error(NullPointerException()))
-                }
-                null -> {
-                    _otpSetEvent.value = Event(Resource.Error(NullPointerException()))
-                }
-            }
-        }
+            }*/
     }
 }
 

@@ -2,12 +2,14 @@ package com.terrranullius.pickcab.ui.fragments
 
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.textfield.TextInputLayout
@@ -20,7 +22,7 @@ class Login : Fragment() {
     lateinit var mobile_number: EditText
     lateinit var inputLayout: TextInputLayout
 
-    private val viewModel by viewModels<MainViewModel>()
+    private val viewModel by activityViewModels<MainViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,6 +36,10 @@ class Login : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         mobile_number = view.findViewById(R.id.login_mobile_number)
         inputLayout = view.findViewById(R.id.mobile_input_layout)
+
+        if (viewModel.phonenumber != 0L){
+            mobile_number.setText(viewModel.phonenumber.toString())
+        }
 
         view.findViewById<Button>(R.id.login_proceed).setOnClickListener {
 
@@ -51,7 +57,6 @@ class Login : Fragment() {
                 inputLayout.error = "Please Enter 10 digit Mobile Number"
                 return@setOnClickListener
             }
-            mobile_number.setText("")
 
             mobile.toLongOrNull()?.let {
                 viewModel.startVerification(it)
@@ -68,8 +73,6 @@ class Login : Fragment() {
                 is Resource.Error -> { }
                 is Resource.Loading -> { }
             }
-
-            findNavController().navigate(R.id.action_login_to_OTPConfirmation)
         })
     }
 }
