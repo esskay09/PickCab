@@ -4,13 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/blue_primary"
+    android:background="@color/colorPrimary"
     tools:context=".ui.fragments.SplashFragment">
 
-    <ImageView
-        android:id="@+id/imageView"
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/taxiView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:src="@drawable/booking_car" />
+        app:lottie_rawRes="@raw/taxi"
+        app:lottie_autoPlay="true"
+        app:lottie_repeatMode="restart"
+        app:lottie_loop="true"
+        />
 </FrameLayout>

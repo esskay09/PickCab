@@ -18,12 +18,22 @@
             android:id="@+id/action_splashFragment_to_login"
             app:destination="@id/login"
             app:popUpTo="@id/splashFragment"
-            app:popUpToInclusive="true" />
+            app:popUpToInclusive="true"
+            app:enterAnim="@anim/anim_slide_in"
+            app:exitAnim="@anim/anim_slide_out"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@anim/anim_slide_in"
+            app:popExitAnim="@anim/anim_slide_out"/>
         <action
             android:id="@+id/action_splashFragment_to_mainFragment"
             app:destination="@id/mainFragment"
             app:popUpTo="@id/splashFragment"
-            app:popUpToInclusive="true" />
+            app:popUpToInclusive="true"
+            app:enterAnim="@anim/anim_slide_in"
+            app:exitAnim="@anim/anim_slide_out"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@anim/anim_slide_in"
+            app:popExitAnim="@anim/anim_slide_out"/>
     </fragment>
     <fragment
         android:id="@+id/bookingConfirmedFragment"
@@ -33,7 +43,12 @@
             android:id="@+id/action_bookingConfirmedFragment_to_mainFragment"
             app:destination="@id/mainFragment"
             app:popUpTo="@id/bookingConfirmedFragment"
-            app:popUpToInclusive="true" />
+            app:popUpToInclusive="true"
+            app:enterAnim="@anim/anim_slide_in"
+            app:exitAnim="@anim/anim_slide_out"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@anim/anim_slide_in"
+            app:popExitAnim="@anim/anim_slide_out"/>
     </fragment>
     <action
         android:id="@+id/action_global_booking_finished"
@@ -51,7 +66,12 @@
         android:label="Login">
         <action
             android:id="@+id/action_login_to_OTPConfirmation"
-            app:destination="@id/OTPConfirmation" />
+            app:destination="@id/OTPConfirmation"
+            app:enterAnim="@anim/anim_slide_in"
+            app:exitAnim="@anim/anim_slide_out"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@anim/anim_slide_in"
+            app:popExitAnim="@anim/anim_slide_out"/>
     </fragment>
     <fragment
         android:id="@+id/OTPConfirmation"
@@ -61,7 +81,12 @@
             android:id="@+id/action_OTPConfirmation_to_mainFragment"
             app:destination="@id/mainFragment"
             app:popUpTo="@id/OTPConfirmation"
-            app:popUpToInclusive="true" />
+            app:popUpToInclusive="true"
+            app:enterAnim="@anim/anim_slide_in"
+            app:exitAnim="@anim/anim_slide_out"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@anim/anim_slide_in"
+            app:popExitAnim="@anim/anim_slide_out"/>
         <action
             android:id="@+id/action_OTPConfirmation_to_login"
             app:destination="@id/login"

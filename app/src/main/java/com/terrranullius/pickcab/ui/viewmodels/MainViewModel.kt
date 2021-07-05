@@ -58,7 +58,7 @@ class MainViewModel : ViewModel() {
 
     private val _phoneNumberSetEvent = MutableLiveData<Event<Resource<Long>>>()
 
-     private val _verificationStartedEvent = MutableLiveData<Event<Unit>>()
+    private val _verificationStartedEvent = MutableLiveData<Event<Unit>>()
     val verificationStartedEvent: LiveData<Event<Unit>>
         get() = _verificationStartedEvent
 
@@ -101,25 +101,25 @@ class MainViewModel : ViewModel() {
         _verificationStartedEvent.value = Event(Unit)
 
 
-           PickCabApi.retrofitService.startVerification(phonenumber).observeForever{
+        PickCabApi.retrofitService.startVerification(phonenumber).observeForever {
 
-               Log.d("sha","startverification response : $it")
+            Log.d("sha", "startverification response : $it")
 
-               when(it){
-                   is ApiSuccessResponse -> {
-                       _phoneNumberSetEvent.value = Event(Resource.Success(phonenumber))
-                   }
-                   is ApiEmptyResponse -> {
-                       _phoneNumberSetEvent.value = Event(Resource.Error(Exception()))
-                   }
-                   is ApiErrorResponse -> {
-                       _phoneNumberSetEvent.value = Event(Resource.Error(Exception()))
-                   }
-                   null -> {
-                       _phoneNumberSetEvent.value = Event(Resource.Error(Exception()))
-                   }
-               }
-          }
+            when (it) {
+                is ApiSuccessResponse -> {
+                    _phoneNumberSetEvent.value = Event(Resource.Success(phonenumber))
+                }
+                is ApiEmptyResponse -> {
+                    _phoneNumberSetEvent.value = Event(Resource.Error(Exception()))
+                }
+                is ApiErrorResponse -> {
+                    _phoneNumberSetEvent.value = Event(Resource.Error(Exception()))
+                }
+                null -> {
+                    _phoneNumberSetEvent.value = Event(Resource.Error(Exception()))
+                }
+            }
+        }
 
     }
 
@@ -127,51 +127,58 @@ class MainViewModel : ViewModel() {
 
         _otpSetEvent.value = Event(Resource.Loading)
 
-            PickCabApi.retrofitService.verifyOtp(phonenumber, otp).observeForever{
+        PickCabApi.retrofitService.verifyOtp(phonenumber, otp).observeForever {
 
-                Log.d("sha","verify otp response : $it")
+            Log.d("sha", "verify otp response : $it")
 
-                when(it){
-                    is ApiSuccessResponse -> {
-                        if (it.body.result == "not verified" || it.body.result == "error") {
-                            _otpSetEvent.value = Event(Resource.Error(NullPointerException()))
-                        } else if (it.body.result == "verified") {
-                            _otpSetEvent.value = Event(Resource.Success(phonenumber))
-                        }
-                    }
-                    is ApiEmptyResponse -> {
+            when (it) {
+                is ApiSuccessResponse -> {
+                    if (it.body.result == "not verified" || it.body.result == "error") {
                         _otpSetEvent.value = Event(Resource.Error(NullPointerException()))
+                    } else if (it.body.result == "verified") {
+                        _otpSetEvent.value = Event(Resource.Success(phonenumber))
                     }
-                    is ApiErrorResponse -> {
-                        _otpSetEvent.value = Event(Resource.Error(NullPointerException()))
-                    }
-                    null -> {
-                        _otpSetEvent.value = Event(Resource.Error(NullPointerException()))
-                    }
-
                 }
-            }
-    }
+                is ApiEmptyResponse -> {
+                    _otpSetEvent.value = Event(Resource.Error(NullPointerException()))
+                }
+                is ApiErrorResponse -> {
+                    _otpSetEvent.value = Event(Resource.Error(NullPointerException()))
+                }
+                null -> {
+                    _otpSetEvent.value = Event(Resource.Error(NullPointerException()))
+                }
 
-    fun sendConfirmation(){
-        try {
-            PickCabApi.retrofitService.sendConfirmation(
-                ConfirmationRequest(
-                    number = phonenumber,
-                    startDate = startDate,
-                    endDate = endDate,
-                    time = time,
-                    oneWay = oneWay,
-                    identityUrl = identityProofFireUri,
-                    startDestination = startDestination,
-                    endDestination = endDestination,
-                    forAdmin = true,
-                    forMail = true
-                )
-            )
-        } catch (e: Exception){
-            Log.d("sha", e.message.toString())
+            }
         }
     }
+
+    fun sendConfirmation() {
+        PickCabApi.retrofitService.sendConfirmation(
+            ConfirmationRequest(
+                number = phonenumber,
+                startDate = startDate,
+                endDate = endDate,
+                time = time,
+                oneWay = oneWay,
+                identityUrl = identityProofFireUri,
+                startDestination = startDestination,
+                endDestination = endDestination,
+                forAdmin = true,
+                forMail = true
+            )
+        ).observeForever {
+
+            Log.d("sha", "sendConfirmation Response: $it")
+
+            when (it) {
+                is ApiSuccessResponse -> {
+                }
+                else -> {
+                }
+            }
+        }
+    }
+
 }
 
