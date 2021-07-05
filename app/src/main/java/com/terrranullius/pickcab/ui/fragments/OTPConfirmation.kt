@@ -46,6 +46,8 @@ class OTPConfirmation : Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        sMob = viewModel.phonenumber.toString()
+
         mobile = view.findViewById(R.id.otp_mobile)
         verify = view.findViewById(R.id.verify_otp)
         resendOTP = view.findViewById(R.id.resend_otp)

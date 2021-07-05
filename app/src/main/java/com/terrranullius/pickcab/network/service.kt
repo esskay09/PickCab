@@ -15,13 +15,13 @@ import retrofit2.http.POST
 private const val BASE_URL = "https://pickcab.herokuapp.com/"
 
 private val moshi = Moshi.Builder()
-    .add(LiveDataCallAdapterFactory())
+    .add(KotlinJsonAdapterFactory())
     .build()
 
 
 private val retrofit = Retrofit.Builder()
-    .addConverterFactory(MoshiConverterFactory.create(moshi))
     .addCallAdapterFactory(LiveDataCallAdapterFactory())
+    .addConverterFactory(MoshiConverterFactory.create(moshi))
     .baseUrl(BASE_URL)
     .build()
 
@@ -43,7 +43,7 @@ interface PickCabApiService {
 
     @POST("verify/number")
     @FormUrlEncoded
-    suspend fun startVerification(
+     fun startVerification(
         @Field("number") number: Long
     ) : LiveData<GenericApiResponse<ServerResponse>>
 }

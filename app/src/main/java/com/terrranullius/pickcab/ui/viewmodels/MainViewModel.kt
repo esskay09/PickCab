@@ -1,6 +1,7 @@
 package com.terrranullius.pickcab.ui.viewmodels
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -89,25 +90,28 @@ class MainViewModel : ViewModel() {
 
         phonenumber = number
 
-        viewModelScope.launch {
+        val response = PickCabApi.retrofitService.startVerification(phonenumber)
 
-            val response = PickCabApi.retrofitService.startVerification(phonenumber)
+        Log.d("sha", response.value.toString())
 
-            when (response.value) {
-                is ApiSuccessResponse -> {
-                    _phoneNumberSetEvent.value = Event(Resource.Success(phonenumber))
-                }
-                is ApiEmptyResponse -> {
-                    _phoneNumberSetEvent.value = Event(Resource.Error(Exception()))
-                }
-                is ApiErrorResponse -> {
-                    _phoneNumberSetEvent.value = Event(Resource.Error(Exception()))
-                }
-                null -> {
-                    _phoneNumberSetEvent.value = Event(Resource.Error(Exception()))
-                }
+        when (response.value) {
+            is ApiSuccessResponse -> {
+                _phoneNumberSetEvent.value = Event(Resource.Success(phonenumber))
+            }
+            is ApiEmptyResponse -> {
+                Log.d("api error", response.value.toString())
+                _phoneNumberSetEvent.value = Event(Resource.Error(Exception()))
+            }
+            is ApiErrorResponse -> {
+                Log.d("api error", response.value.toString())
+                _phoneNumberSetEvent.value = Event(Resource.Error(Exception()))
+            }
+            null -> {
+                Log.d("api error", response.value.toString())
+                _phoneNumberSetEvent.value = Event(Resource.Error(Exception()))
             }
         }
+
     }
 
     fun verifyOtp(otp: Int) {
