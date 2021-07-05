@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.common.util.NumberUtils
 import com.terrranullius.pickcab.other.Constants.PREFS_DIR
 import com.terrranullius.pickcab.other.Constants.PREF_NUMBER
 import com.terrranullius.pickcab.other.Constants.PREF_VERIFIED
@@ -94,6 +95,19 @@ class OTPConfirmation : Fragment(), View.OnClickListener {
                 }
             }
         })
+
+        viewModel.otpLiveData.observe(viewLifecycleOwner){
+            if (it.toString().length==6){
+                val otpString = it.toString()
+                otp1.setText(otpString[0].toString())
+                otp2.setText(otpString[1].toString())
+                 otp3.setText(otpString[2].toString())
+                 otp4.setText(otpString[3].toString())
+                 otp5.setText(otpString[4].toString())
+                 otp6.setText(otpString[5].toString())
+
+            }
+        }
     }
 
     private fun onOtpVerified() {
@@ -109,7 +123,7 @@ class OTPConfirmation : Fragment(), View.OnClickListener {
     override fun onClick(view: View) {
         when (view.id) {
             R.id.edit_mobile -> findNavController().navigate(R.id.action_OTPConfirmation_to_login)
-            R.id.verify_otp -> viewModel.verifyOtp(oTP?.toIntOrNull() ?: return)
+            R.id.verify_otp -> { viewModel.verifyOtp(oTP.toIntOrNull() ?: return) }
             R.id.resend_otp -> viewModel.startVerification(viewModel.phoneNumber.value!!)
         }
     }
@@ -150,7 +164,7 @@ class OTPConfirmation : Fragment(), View.OnClickListener {
                 else -> {
                 }
             }
-            if (oTP != null && oTP!!.length == 6) {
+            if (oTP.length == 6) {
                 verify.isEnabled = true
                 verifyCard.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
                 verify.performClick()

@@ -88,6 +88,10 @@ class MainViewModel : ViewModel() {
     val phoneNumber: LiveData<Long>
         get() = _phoneNumber
 
+    private val _otpLiveData = MutableLiveData(0)
+    val otpLiveData: LiveData<Int>
+        get() = _otpLiveData
+
     fun getIdentity(identitySource: IdentitySource) {
         _getIdentityEvent.value = Event(identitySource)
     }
@@ -100,6 +104,11 @@ class MainViewModel : ViewModel() {
         _phoneNumber.value = number
     }
 
+    fun setOtp(otp: Int){
+        _otpLiveData.value = otp
+    }
+
+
     fun startVerification(number: Long) {
 
         _verificationStartedEvent.value = Event(Unit)
@@ -110,7 +119,7 @@ class MainViewModel : ViewModel() {
 
         PickCabApi.retrofitService.startVerification(number).observeForever {
 
-            Log.d("sha", "startverification response : $it")
+            Log.d("sha", "start verification response : $it")
 
             when (it) {
                 is ApiSuccessResponse -> {
