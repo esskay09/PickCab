@@ -80,13 +80,13 @@
         <action
             android:id="@+id/action_OTPConfirmation_to_mainFragment"
             app:destination="@id/mainFragment"
-            app:popUpTo="@id/OTPConfirmation"
-            app:popUpToInclusive="true"
             app:enterAnim="@anim/anim_slide_in"
             app:exitAnim="@anim/anim_slide_out"
             app:launchSingleTop="true"
             app:popEnterAnim="@anim/anim_slide_in"
-            app:popExitAnim="@anim/anim_slide_out"/>
+            app:popExitAnim="@anim/anim_slide_out"
+            app:popUpTo="@id/OTPConfirmation"
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_OTPConfirmation_to_login"
             app:destination="@id/login"

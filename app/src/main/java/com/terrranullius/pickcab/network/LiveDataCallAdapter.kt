@@ -2,7 +2,7 @@ package com.terrranullius.pickcab.network
 
 import android.util.Log
 import androidx.lifecycle.LiveData
-import com.terrranullius.pickcab.util.GenericApiResponse
+import com.terrranullius.pickcab.network.GenericApiResponse
 import retrofit2.Call
 import retrofit2.CallAdapter
 import retrofit2.Callback

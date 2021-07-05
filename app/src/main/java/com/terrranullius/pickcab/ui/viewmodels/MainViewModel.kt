@@ -1,22 +1,15 @@
 package com.terrranullius.pickcab.ui.viewmodels
 
-import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.terrranullius.pickcab.network.ConfirmationRequest
-import com.terrranullius.pickcab.network.PickCabApi
-import com.terrranullius.pickcab.other.Event
+import com.terrranullius.pickcab.network.*
 import com.terrranullius.pickcab.other.IdentitySource
-import com.terrranullius.pickcab.util.ApiEmptyResponse
-import com.terrranullius.pickcab.util.ApiErrorResponse
-import com.terrranullius.pickcab.util.ApiSuccessResponse
+import com.terrranullius.pickcab.util.Event
 import com.terrranullius.pickcab.util.Resource
 
 class MainViewModel : ViewModel() {
-
-    var phonenumber = 0L
 
     var startDestination = ""
     var endDestination = ""
@@ -87,23 +80,41 @@ class MainViewModel : ViewModel() {
     val getIdentityEvent: LiveData<Event<IdentitySource>>
         get() = _getIdentityEvent
 
+    private val _showNumberChooser = MutableLiveData<Event<Unit>>()
+    val showNumberChooser: LiveData<Event<Unit>>
+        get() = _showNumberChooser
+
+    private val _phoneNumber = MutableLiveData(0L)
+    val phoneNumber: LiveData<Long>
+        get() = _phoneNumber
+
     fun getIdentity(identitySource: IdentitySource) {
         _getIdentityEvent.value = Event(identitySource)
     }
 
-    fun startVerification(number: Long) {
+    fun showNumbersHint() {
+        _showNumberChooser.value = Event(Unit)
+    }
 
-        phonenumber = number
+    fun setNumber(number: Long) {
+        _phoneNumber.value = number
+    }
+
+    fun startVerification(number: Long) {
 
         _verificationStartedEvent.value = Event(Unit)
 
-        PickCabApi.retrofitService.startVerification(phonenumber).observeForever {
+        setNumber(number)
+
+//        _phoneNumberSetEvent.value = Event(Resource.Success(number))
+
+        PickCabApi.retrofitService.startVerification(number).observeForever {
 
             Log.d("sha", "startverification response : $it")
 
             when (it) {
                 is ApiSuccessResponse -> {
-                    _phoneNumberSetEvent.value = Event(Resource.Success(phonenumber))
+                    _phoneNumberSetEvent.value = Event(Resource.Success(number))
                 }
                 is ApiEmptyResponse -> {
                     _phoneNumberSetEvent.value = Event(Resource.Error(Exception()))
@@ -123,7 +134,9 @@ class MainViewModel : ViewModel() {
 
         _otpSetEvent.value = Event(Resource.Loading)
 
-        PickCabApi.retrofitService.verifyOtp(phonenumber, otp).observeForever {
+//        _otpSetEvent.value = Event(Resource.Success(phoneNumber.value ?: 0L))
+
+        PickCabApi.retrofitService.verifyOtp(phoneNumber.value!!, otp).observeForever {
 
             Log.d("sha", "verify otp response : $it")
 
@@ -132,7 +145,7 @@ class MainViewModel : ViewModel() {
                     if (it.body.result == "not verified" || it.body.result == "error") {
                         _otpSetEvent.value = Event(Resource.Error(NullPointerException()))
                     } else if (it.body.result == "verified") {
-                        _otpSetEvent.value = Event(Resource.Success(phonenumber))
+                        _otpSetEvent.value = Event(Resource.Success(phoneNumber.value!!))
                     }
                 }
                 is ApiEmptyResponse -> {
@@ -150,30 +163,30 @@ class MainViewModel : ViewModel() {
     }
 
     fun sendConfirmation() {
-        PickCabApi.retrofitService.sendConfirmation(
-            ConfirmationRequest(
-                number = phonenumber,
-                startDate = startDate,
-                endDate = endDate,
-                time = time,
-                oneWay = oneWay,
-                identityUrl = identityProofFireUri,
-                startDestination = startDestination,
-                endDestination = endDestination,
-                forAdmin = true,
-                forMail = true
-            )
-        ).observeForever {
+          PickCabApi.retrofitService.sendConfirmation(
+              ConfirmationRequest(
+                  number = phoneNumber.value!!,
+                  startDate = startDate,
+                  endDate = endDate,
+                  time = time,
+                  oneWay = oneWay,
+                  identityUrl = identityProofFireUri,
+                  startDestination = startDestination,
+                  endDestination = endDestination,
+                  forAdmin = true,
+                  forMail = true
+              )
+          ).observeForever {
 
-            Log.d("sha", "sendConfirmation Response: $it")
+              Log.d("sha", "sendConfirmation Response: $it")
 
-            when (it) {
-                is ApiSuccessResponse -> {
-                }
-                else -> {
-                }
-            }
-        }
+              when (it) {
+                  is ApiSuccessResponse -> {
+                  }
+                  else -> {
+                  }
+              }
+          }
     }
 
 }

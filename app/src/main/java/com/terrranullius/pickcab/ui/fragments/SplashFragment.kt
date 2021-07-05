@@ -43,7 +43,7 @@ class SplashFragment : Fragment() {
 
         if (isVerified){
             val userNumber = prefs.getLong(PREF_NUMBER, 9334805466)
-            viewModel.phonenumber = userNumber
+            viewModel.setNumber(userNumber)
         }
 
         lifecycleScope.launch {

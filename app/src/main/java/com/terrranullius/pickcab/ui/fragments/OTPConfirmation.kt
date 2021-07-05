@@ -17,7 +17,7 @@ import androidx.navigation.fragment.findNavController
 import com.terrranullius.pickcab.other.Constants.PREFS_DIR
 import com.terrranullius.pickcab.other.Constants.PREF_NUMBER
 import com.terrranullius.pickcab.other.Constants.PREF_VERIFIED
-import com.terrranullius.pickcab.other.EventObserver
+import com.terrranullius.pickcab.util.EventObserver
 import com.terrranullius.pickcab.ui.viewmodels.MainViewModel
 import com.terrranullius.pickcab.util.Resource
 
@@ -28,6 +28,7 @@ class OTPConfirmation : Fragment(), View.OnClickListener {
     lateinit var otp4: EditText
     lateinit var otp5: EditText
     lateinit var otp6: EditText
+    lateinit var progressVerify: ProgressBar
     lateinit var verify: Button
     lateinit var edit: ImageButton
     lateinit var mobile: TextView
@@ -50,7 +51,7 @@ class OTPConfirmation : Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        sMob = viewModel.phonenumber.toString()
+        sMob = viewModel.phoneNumber.value.toString()
 
         mobile = view.findViewById(R.id.otp_mobile)
         verify = view.findViewById(R.id.verify_otp)
@@ -61,6 +62,7 @@ class OTPConfirmation : Fragment(), View.OnClickListener {
         otp4 = view.findViewById(R.id.otp_pin_4)
         otp5 = view.findViewById(R.id.otp_pin_5)
         otp6 = view.findViewById(R.id.otp_pin_6)
+        progressVerify = view.findViewById(R.id.ps_verifying_otp)
         edit = view.findViewById(R.id.edit_mobile)
         invalidotp = view.findViewById(R.id.invalid_otp)
         verifyCard = view.findViewById(R.id.verify_card)
@@ -82,12 +84,13 @@ class OTPConfirmation : Fragment(), View.OnClickListener {
             when (it) {
                 is Resource.Success -> {
                     onOtpVerified()
+                    progressVerify.visibility = View.INVISIBLE
                 }
                 is Resource.Error -> {
-
+                    progressVerify.visibility = View.INVISIBLE
                 }
                 Resource.Loading -> {
-
+                    progressVerify.visibility = View.VISIBLE
                 }
             }
         })
@@ -97,7 +100,7 @@ class OTPConfirmation : Fragment(), View.OnClickListener {
         val prefs = requireContext().getSharedPreferences(PREFS_DIR, Context.MODE_PRIVATE)
         val editor = prefs.edit()
         editor.putBoolean(PREF_VERIFIED, true)
-        editor.putLong(PREF_NUMBER, viewModel.phonenumber)
+        editor.putLong(PREF_NUMBER, viewModel.phoneNumber.value!!)
         editor.apply()
         findNavController().navigate(R.id.action_OTPConfirmation_to_mainFragment)
     }
@@ -107,9 +110,7 @@ class OTPConfirmation : Fragment(), View.OnClickListener {
         when (view.id) {
             R.id.edit_mobile -> findNavController().navigate(R.id.action_OTPConfirmation_to_login)
             R.id.verify_otp -> viewModel.verifyOtp(oTP?.toIntOrNull() ?: return)
-            R.id.resend_otp -> viewModel.startVerification(viewModel.phonenumber)
-            else -> {
-            }
+            R.id.resend_otp -> viewModel.startVerification(viewModel.phoneNumber.value!!)
         }
     }
 
@@ -160,12 +161,9 @@ class OTPConfirmation : Fragment(), View.OnClickListener {
         }
     }
 
-    val oTP: String?
+    val oTP: String
         get() {
             return otp1.text.toString() + otp2.text.toString() + otp3.text.toString() + otp4.text.toString() + otp5.text.toString() + otp6.text.toString()
         }
 
-    companion object {
-        private const val KEY_VERIFY_IN_PROGRESS = "key_verify_in_progress"
-    }
 }

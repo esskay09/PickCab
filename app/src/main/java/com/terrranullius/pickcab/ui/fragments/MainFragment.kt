@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -25,9 +24,9 @@ import com.terrranullius.pickcab.R
 import com.terrranullius.pickcab.databinding.DialogOneWayPickerBinding
 import com.terrranullius.pickcab.databinding.FragmentMainBinding
 import com.terrranullius.pickcab.other.Constants.ADMIN_NUMBER
-import com.terrranullius.pickcab.other.EventObserver
 import com.terrranullius.pickcab.other.IdentitySource
 import com.terrranullius.pickcab.ui.viewmodels.MainViewModel
+import com.terrranullius.pickcab.util.EventObserver
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -46,14 +45,6 @@ class MainFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicturePreview()){
-
-        }
-
-        imagePickerLauncher = registerForActivityResult(ActivityResultContracts.OpenDocument()){
-
-        }
 
         binding = DataBindingUtil.inflate(
             inflater,

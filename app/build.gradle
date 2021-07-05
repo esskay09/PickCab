@@ -87,4 +87,8 @@ dependencies {
     //Lottie
     implementation 'com.airbnb.android:lottie:3.7.0'
 
+    //Sms Retriever
+    implementation 'com.google.android.gms:play-services-auth:19.0.0'
+    implementation 'com.google.android.gms:play-services-auth-api-phone:17.5.1'
+
 }

@@ -10,13 +10,11 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.textfield.TextInputLayout
 import com.terrranullius.pickcab.R
-import com.terrranullius.pickcab.other.EventObserver
 import com.terrranullius.pickcab.ui.viewmodels.MainViewModel
-import com.terrranullius.pickcab.util.Resource
+import com.terrranullius.pickcab.util.EventObserver
 
 class Login : Fragment() {
     lateinit var mobile_number: EditText
@@ -37,9 +35,7 @@ class Login : Fragment() {
         mobile_number = view.findViewById(R.id.login_mobile_number)
         inputLayout = view.findViewById(R.id.mobile_input_layout)
 
-        if (viewModel.phonenumber != 0L){
-            mobile_number.setText(viewModel.phonenumber.toString())
-        }
+        viewModel.showNumbersHint()
 
         view.findViewById<Button>(R.id.login_proceed).setOnClickListener {
 
@@ -60,6 +56,7 @@ class Login : Fragment() {
 
             mobile.toLongOrNull()?.let {
                 viewModel.startVerification(it)
+                findNavController().navigate(R.id.action_login_to_OTPConfirmation)
             } ?: return@setOnClickListener
         }
 
@@ -67,9 +64,12 @@ class Login : Fragment() {
     }
 
     private fun setObservers() {
-        viewModel.verificationStartedEvent.observe(viewLifecycleOwner, EventObserver {
 
-            findNavController().navigate(R.id.action_login_to_OTPConfirmation)
-            })
+        viewModel.phoneNumber.observe(viewLifecycleOwner) {
+            if (it != 0L) {
+                mobile_number.setText(it.toString())
+            }
         }
     }
+
+}
