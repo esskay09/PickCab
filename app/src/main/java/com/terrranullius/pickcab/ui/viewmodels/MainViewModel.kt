@@ -2,13 +2,12 @@ package com.terrranullius.pickcab.ui.viewmodels
 
 import android.net.Uri
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
+import com.terrranullius.pickcab.network.ConfirmationRequest
 import com.terrranullius.pickcab.network.PickCabApi
 import com.terrranullius.pickcab.network.ServerResponse
 import com.terrranullius.pickcab.other.Event
+import com.terrranullius.pickcab.other.IdentitySource
 import com.terrranullius.pickcab.util.ApiEmptyResponse
 import com.terrranullius.pickcab.util.ApiErrorResponse
 import com.terrranullius.pickcab.util.ApiSuccessResponse
@@ -58,11 +57,11 @@ class MainViewModel : ViewModel() {
         }
 
     private val _phoneNumberSetEvent = MutableLiveData<Event<Resource<Long>>>()
-    val verificationStartEvent: LiveData<Event<Resource<Long>>>
-        get() = _phoneNumberSetEvent
 
+     private val _verificationStartedEvent = MutableLiveData<Event<Unit>>()
+    val verificationStartedEvent: LiveData<Event<Unit>>
+        get() = _verificationStartedEvent
 
-    //TODO return verified number
     private val _otpSetEvent = MutableLiveData<Event<Resource<Long>>>()
     val otpSetEvent: LiveData<Event<Resource<Long>>>
         get() = _otpSetEvent
@@ -87,13 +86,22 @@ class MainViewModel : ViewModel() {
     val identitySetEvent: LiveData<Event<Unit>>
         get() = _identitySetEvent
 
+    private val _getIdentityEvent = MutableLiveData<Event<IdentitySource>>()
+    val getIdentityEvent: LiveData<Event<IdentitySource>>
+        get() = _getIdentityEvent
+
+    fun getIdentity(identitySource: IdentitySource) {
+        _getIdentityEvent.value = Event(identitySource)
+    }
+
     fun startVerification(number: Long) {
 
         phonenumber = number
 
-        _phoneNumberSetEvent.value = Event(Resource.Success(phonenumber))
+        _verificationStartedEvent.value = Event(Unit)
 
-      /*     PickCabApi.retrofitService.startVerification(phonenumber).observeForever{
+
+           PickCabApi.retrofitService.startVerification(phonenumber).observeForever{
 
                Log.d("sha","startverification response : $it")
 
@@ -111,15 +119,15 @@ class MainViewModel : ViewModel() {
                        _phoneNumberSetEvent.value = Event(Resource.Error(Exception()))
                    }
                }
-          }*/
+          }
 
     }
 
     fun verifyOtp(otp: Int) {
 
-        Log.d("sha", "number: $phonenumber")
+        _otpSetEvent.value = Event(Resource.Loading)
 
-            /*PickCabApi.retrofitService.verifyOtp(phonenumber, otp).observeForever{
+            PickCabApi.retrofitService.verifyOtp(phonenumber, otp).observeForever{
 
                 Log.d("sha","verify otp response : $it")
 
@@ -142,7 +150,28 @@ class MainViewModel : ViewModel() {
                     }
 
                 }
-            }*/
+            }
+    }
+
+    fun sendConfirmation(){
+        try {
+            PickCabApi.retrofitService.sendConfirmation(
+                ConfirmationRequest(
+                    number = phonenumber,
+                    startDate = startDate,
+                    endDate = endDate,
+                    time = time,
+                    oneWay = oneWay,
+                    identityUrl = identityProofFireUri,
+                    startDestination = startDestination,
+                    endDestination = endDestination,
+                    forAdmin = true,
+                    forMail = true
+                )
+            )
+        } catch (e: Exception){
+            Log.d("sha", e.message.toString())
+        }
     }
 }
 

@@ -44,33 +44,11 @@ class BookingConfirmedFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setBookingDetails()
+        viewModel.sendConfirmation()
 
         lifecycleScope.launch(){
-
                 delay(200L)
                 tickAnimation()
-
-            withContext(IO){
-                try {
-                    PickCabApi.retrofitService.sendConfirmation(
-                        ConfirmationRequest(
-                            number = viewModel.phonenumber,
-                            startDate = viewModel.startDate,
-                            endDate = viewModel.endDate,
-                            time = viewModel.time,
-                            oneWay = viewModel.oneWay,
-                            identityUrl = viewModel.identityProofFireUri,
-                            startDestination = viewModel.startDestination,
-                            endDestination = viewModel.endDestination,
-                            forAdmin = true,
-                            forMail = true
-                        )
-                    )
-                } catch (e: Exception){
-                    Log.d("Pickcab", e.message.toString())
-                }
-            }
-
         }
 
 

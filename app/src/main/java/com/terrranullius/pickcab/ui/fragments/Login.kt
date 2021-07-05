@@ -67,12 +67,9 @@ class Login : Fragment() {
     }
 
     private fun setObservers() {
-        viewModel.verificationStartEvent.observe(viewLifecycleOwner, EventObserver {
-            when (it) {
-                is Resource.Success -> { findNavController().navigate(R.id.action_login_to_OTPConfirmation) }
-                is Resource.Error -> { }
-                is Resource.Loading -> { }
-            }
-        })
+        viewModel.verificationStartedEvent.observe(viewLifecycleOwner, EventObserver {
+
+            findNavController().navigate(R.id.action_login_to_OTPConfirmation)
+            })
+        }
     }
-}

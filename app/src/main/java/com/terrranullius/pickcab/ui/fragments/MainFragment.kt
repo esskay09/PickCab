@@ -13,6 +13,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -31,6 +33,7 @@ import com.terrranullius.pickcab.other.Constants.ADMIN_NUMBER
 import com.terrranullius.pickcab.other.Constants.CAPTURE_IMAGE_IDENTITY
 import com.terrranullius.pickcab.other.Constants.SELECT_IMAGE_IDENTITY
 import com.terrranullius.pickcab.other.EventObserver
+import com.terrranullius.pickcab.other.IdentitySource
 import com.terrranullius.pickcab.ui.viewmodels.MainViewModel
 import java.io.File
 import java.io.IOException
@@ -44,11 +47,22 @@ class MainFragment : Fragment() {
     private lateinit var currentPhotoPath: String
     private val viewModel by activityViewModels<MainViewModel>()
 
+    private lateinit var cameraLauncher: ActivityResultLauncher<Void>
+    private lateinit var imagePickerLauncher: ActivityResultLauncher<Array<String>>
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicturePreview()){
+
+        }
+
+        imagePickerLauncher = registerForActivityResult(ActivityResultContracts.OpenDocument()){
+
+        }
 
         binding = DataBindingUtil.inflate(
             inflater,
@@ -201,12 +215,8 @@ class MainFragment : Fragment() {
             .setTitle("Identity Proof (Aadhar card preferred)")
             .setItems(R.array.identity_options) { _: DialogInterface, i: Int ->
                 when (i) {
-                    1 -> {
-                        val imageIntent =
-                            Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-                        requireActivity().startActivityForResult(imageIntent, SELECT_IMAGE_IDENTITY)
-                    }
-                    0 -> startCameraIntent()
+                    1 -> getImageFromStorage()
+                    0 -> getImageFromCamera()
 
                 }
             }
@@ -214,51 +224,13 @@ class MainFragment : Fragment() {
         dialog.show()
     }
 
-    private fun startCameraIntent() {
-
-        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
-            // Ensure that there's a camera activity to handle the intent
-            takePictureIntent.resolveActivity(requireActivity().packageManager)?.also {
-                // Create the File where the photo should go
-                val photoFile: File? = try {
-                    createImageFile()
-                } catch (ex: IOException) {
-                    // Error occurred while creating the File
-                    null
-                }
-                // Continue only if the File was successfully created
-                photoFile?.also {
-                    val photoURI: Uri = FileProvider.getUriForFile(
-                        requireActivity(),
-                        "com.terrranullius.pickcab",
-                        it
-                    )
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-
-                    viewModel.capturedPhotoUri = Uri.parse(currentPhotoPath)
-
-                    requireActivity().startActivityForResult(
-                        takePictureIntent,
-                        CAPTURE_IMAGE_IDENTITY
-                    )
-                }
-            }
-        }
+    private fun getImageFromStorage() {
+        viewModel.getIdentity(IdentitySource.STORAGE)
     }
 
-    private fun createImageFile(): File {
-        // Create an image file name
-        val timeStamp: String =
-            SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-        val storageDir = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile(
-            "JPEG_${timeStamp}_", /* prefix */
-            ".jpg", /* suffix */
-            storageDir /* directory */
-        ).apply {
-            // Save a file: path for use with ACTION_VIEW intents
-            currentPhotoPath = absolutePath
-        }
+    private fun getImageFromCamera() {
+        viewModel.getIdentity(IdentitySource.CAMERA)
     }
+
 
 }

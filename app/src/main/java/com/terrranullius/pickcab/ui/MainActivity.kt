@@ -1,11 +1,10 @@
 package com.terrranullius.pickcab.ui
 
-import android.app.Activity
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
@@ -18,15 +17,16 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.UploadTask
 import com.google.firebase.storage.ktx.component1
 import com.google.firebase.storage.ktx.component2
 import com.iammert.tileprogressview.TiledProgressView
 import com.terrranullius.pickcab.NavGraphDirections
 import com.terrranullius.pickcab.R
 import com.terrranullius.pickcab.databinding.ActivityMainBinding
-import com.terrranullius.pickcab.other.Constants.CAPTURE_IMAGE_IDENTITY
-import com.terrranullius.pickcab.other.Constants.SELECT_IMAGE_IDENTITY
 import com.terrranullius.pickcab.other.EventObserver
+import com.terrranullius.pickcab.other.IdentitySource.CAMERA
+import com.terrranullius.pickcab.other.IdentitySource.STORAGE
 import com.terrranullius.pickcab.ui.viewmodels.MainViewModel
 import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
@@ -34,58 +34,86 @@ import java.text.SimpleDateFormat
 
 class MainActivity : AppCompatActivity() {
 
-        private lateinit var binding: ActivityMainBinding
+    private lateinit var binding: ActivityMainBinding
 
-        private val firebaseStorage = FirebaseStorage.getInstance()
-        private val viewModel: MainViewModel by viewModels()
-        private lateinit var fileRef: StorageReference
+    private val firebaseStorage = FirebaseStorage.getInstance()
+    private val viewModel: MainViewModel by viewModels()
+    private lateinit var fileRef: StorageReference
 
-        private lateinit var btnDialog: BottomSheetDialog
-        private lateinit var btmDialogLayout: View
-        private lateinit var cameraLauncer: ActivityResultLauncher<Void>
-        private lateinit var imagePickLauncher: ActivityResultLauncher<String>
+    private lateinit var btnDialog: BottomSheetDialog
+    private lateinit var btmDialogLayout: View
+    private lateinit var cameraLaunhcer: ActivityResultLauncher<Void>
+    private lateinit var imagePickerLauncher: ActivityResultLauncher<String>
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
+        binding = DataBindingUtil.setContentView(
+            this,
+            R.layout.activity_main
+        )
 
-            binding = DataBindingUtil.setContentView(
-                this,
-                R.layout.activity_main
-            )
+        viewModel.identitySetEvent.observe(this, EventObserver {
+            val action = NavGraphDirections.actionGlobalBookingFinished()
+            (supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment)
+                .findNavController()
+                .navigate(action)
+        })
 
-            viewModel.identitySetEvent.observe(this, EventObserver {
-                val action = NavGraphDirections.actionGlobalBookingFinished()
-                (supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment)
-                    .findNavController()
-                    .navigate(action)
-            })
+        registerActivityContracts()
 
-            setActivityContracts()
+        setUpUploadingIdentityProgressBar()
 
-            setUpUploadingIdentityProgressBar()
+        setObservers()
+    }
+
+    private fun setObservers(){
+        viewModel.getIdentityEvent.observe(this, EventObserver{
+            when(it){
+                CAMERA -> cameraLaunhcer.launch(null)
+                STORAGE -> imagePickerLauncher.launch("image/*")
+            }
+        })
+    }
+
+    private fun registerActivityContracts() {
+
+        cameraLaunhcer = registerForActivityResult(ActivityResultContracts.TakePicturePreview()) {
+
+            btnDialog.show()
+
+            val byteArray = convertBitmapIntoByteArray(it)
+
+            try {
+                uploadIdentityImage(null, byteArray)
+            } catch (e: Exception){
+                Log.d("sha", "Error Uploading Image ${e.message}")
+            }
+
         }
+        imagePickerLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) {
 
-    private fun setActivityContracts() {
+            btnDialog.show()
 
-        cameraLauncer = registerForActivityResult(ActivityResultContracts.TakePicturePreview()){
+            var bytes : ByteArray? = null
 
-            val byteArray = convertIntoByteArray(it)
-            val generateName = SimpleDateFormat.getInstance().format(System.currentTimeMillis())
-
-            val firebaseRef = firebaseStorage.reference
-            fileRef = firebaseRef.child("proof_images/$generateName")
-
-            uploadIdentityImage(null, byteArray)
-
-        }
-        imagePickLauncher = registerForActivityResult(ActivityResultContracts.GetContent()){
-
+            try {
+                contentResolver.openInputStream(it)?.readBytes()?.let { byteArray -> bytes = compressImage(byteArray) } ?:  Log.d("Pickcab", "Error Compressing Image byteArrau NUll")
+            } catch (e: Exception){
+                Log.d("sha", "Error Compressing Image ${e.message}")
+            }
+            try {
+                bytes?.let {byteArray ->
+                    uploadIdentityImage(null, byteArray)
+                }?: uploadIdentityImage(it, null)
+            } catch (e: Exception){
+                Log.d("sha", "Error Uploading Image ${e.message}")
+            }
 
         }
 
     }
 
-    private fun convertIntoByteArray(it: Bitmap): ByteArray {
+    private fun convertBitmapIntoByteArray(it: Bitmap): ByteArray {
         val stream = ByteArrayOutputStream()
         it.compress(Bitmap.CompressFormat.PNG, 100, stream)
         val byteArray = stream.toByteArray()
@@ -93,97 +121,77 @@ class MainActivity : AppCompatActivity() {
         return byteArray
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-            super.onActivityResult(requestCode, resultCode, data)
 
-            var fileName = ""
+    private fun uploadIdentityImage(
+        uri: Uri? = null,
+        byteArray: ByteArray? = null
+    ) {
 
-            if (resultCode == Activity.RESULT_OK) {
+        val generateName = SimpleDateFormat.getInstance().format(System.currentTimeMillis()).substringAfterLast("/")
+        val firebaseRef = firebaseStorage.reference
+        fileRef = firebaseRef.child("proof_images/$generateName")
 
-                btnDialog.show()
+        val uploadTask: UploadTask? = uri?.let {
+            fileRef.putFile(it)
+        } ?: byteArray?.let { fileRef.putBytes(it) }
 
-                val uri =
-                    when (requestCode) {
-                        SELECT_IMAGE_IDENTITY -> data?.data
-                        CAPTURE_IMAGE_IDENTITY -> viewModel.capturedPhotoUri
-                        else -> return
-                    }
-
-                fileName = "${uri?.lastPathSegment?.substring(
-                    uri.lastPathSegment?.lastIndexOf("/")?.plus(1) ?: 0
-                )}"
-
-                val firebaseRef = firebaseStorage.reference
-                fileRef = firebaseRef.child("proof_images/$fileName")
-
-                if (requestCode == CAPTURE_IMAGE_IDENTITY) {
-                    val byteArray = compressImage(uri!!)
-                    uploadIdentityImage(null, byteArray)
-                } else if (requestCode == SELECT_IMAGE_IDENTITY) uploadIdentityImage(uri, null)
-
-            }
-        }
-
-
-        private fun uploadIdentityImage(
-            uri: Uri? = null,
-            byteArray: ByteArray? = null
-        ) {
-            val uploadTask = uri?.let {
-                fileRef.putFile(it)
-            } ?: byteArray?.let { fileRef.putBytes(it) }
-
-            uploadTask?.continueWithTask { task ->
-                if (!task.isSuccessful) {
-                    task.exception?.let {
-                        throw it
-                    }
+        uploadTask?.continueWithTask { task ->
+            if (!task.isSuccessful) {
+                task.exception?.let {
+                    throw it
                 }
-                fileRef.downloadUrl
-            }?.addOnCompleteListener { task ->
+            }
+            fileRef.downloadUrl
+        }?.addOnCompleteListener { task ->
 
-                btnDialog.dismiss()
+            btnDialog.dismiss()
 
-                if (task.isSuccessful) {
-                    val downloadUri = task.result
-                    viewModel.identityProofFireUri = downloadUri.toString()
+            if (task.isSuccessful) {
+                val downloadUri = task.result
+                viewModel.identityProofFireUri = downloadUri.toString()
+            }
+        }?.addOnFailureListener {
+
+        }
+
+        uploadTask?.addOnProgressListener { (bytesTransferred, totalByteCount) ->
+            val progress = (100.0 * bytesTransferred) / totalByteCount
+            btmDialogLayout.findViewById<TiledProgressView>(R.id.pv_identity_upload)
+                .setProgress(progress.toFloat())
+        }
+    }
+
+    private fun setUpUploadingIdentityProgressBar() {
+        btnDialog = BottomSheetDialog(this)
+        btmDialogLayout =
+            LayoutInflater.from(this).inflate(R.layout.dialog_progress_identity_upload, null)
+                .apply {
+                    findViewById<TiledProgressView>(R.id.pv_identity_upload)
+                        .apply {
+                            setColorRes(R.color.white)
+                            setLoadingColorRes(R.color.blue_primary_dark)
+                        }
                 }
-            }?.addOnFailureListener {
 
-            }
+        btnDialog.setContentView(btmDialogLayout)
+    }
 
-            uploadTask?.addOnProgressListener { (bytesTransferred, totalByteCount) ->
-                val progress = (100.0 * bytesTransferred) / totalByteCount
-                btmDialogLayout.findViewById<TiledProgressView>(R.id.pv_identity_upload)
-                    .setProgress(progress.toFloat())
-            }
-        }
+    private fun compressImage(inputArray: ByteArray): ByteArray {
+        val bmp = BitmapFactory.decodeByteArray(inputArray,0 , inputArray.size)
 
-        private fun setUpUploadingIdentityProgressBar() {
-            btnDialog = BottomSheetDialog(this)
-            btmDialogLayout =
-                LayoutInflater.from(this).inflate(R.layout.dialog_progress_identity_upload, null)
-                    .apply {
-                        findViewById<TiledProgressView>(R.id.pv_identity_upload)
-                            .apply {
-                                setColorRes(R.color.white)
-                                setLoadingColorRes(R.color.blue_primary_dark)
-                            }
-                    }
+        val quality = if(bmp.byteCount > 1024 * 1024 * 20){
+            ((1024 * 1024 * 20)/bmp.byteCount.toFloat()) * 100f
+        } else 100
 
-            btnDialog.setContentView(btmDialogLayout)
-        }
+        Log.d("sha", quality.toString())
 
-        private fun compressImage(imgUri: Uri): ByteArray {
-            val bmp = BitmapFactory.decodeFile(imgUri.toString())
-            val stream = ByteArrayOutputStream()
-            bmp!!.compress(Bitmap.CompressFormat.JPEG, 50, stream)
-            val byteArray = stream.toByteArray()
-            bmp.recycle()
+        val stream = ByteArrayOutputStream()
+        bmp!!.compress(Bitmap.CompressFormat.JPEG, 60, stream)
+        bmp.recycle()
 
-            return byteArray
-        }
+        return stream.toByteArray()
 
+    }
 
 
 }
