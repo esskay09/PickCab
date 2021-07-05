@@ -2,22 +2,19 @@ package com.terrranullius.pickcab.ui.viewmodels
 
 import android.net.Uri
 import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.terrranullius.pickcab.network.ConfirmationRequest
 import com.terrranullius.pickcab.network.PickCabApi
-import com.terrranullius.pickcab.network.ServerResponse
 import com.terrranullius.pickcab.other.Event
 import com.terrranullius.pickcab.other.IdentitySource
 import com.terrranullius.pickcab.util.ApiEmptyResponse
 import com.terrranullius.pickcab.util.ApiErrorResponse
 import com.terrranullius.pickcab.util.ApiSuccessResponse
 import com.terrranullius.pickcab.util.Resource
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
-
-    var capturedPhotoUri: Uri? = null
 
     var phonenumber = 0L
 
@@ -99,7 +96,6 @@ class MainViewModel : ViewModel() {
         phonenumber = number
 
         _verificationStartedEvent.value = Event(Unit)
-
 
         PickCabApi.retrofitService.startVerification(phonenumber).observeForever {
 

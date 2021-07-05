@@ -13,10 +13,9 @@ import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.terrranullius.pickcab.other.Constants
 import com.terrranullius.pickcab.other.Constants.PREFS_DIR
+import com.terrranullius.pickcab.other.Constants.PREF_NUMBER
 import com.terrranullius.pickcab.other.Constants.PREF_VERIFIED
 import com.terrranullius.pickcab.other.EventObserver
 import com.terrranullius.pickcab.ui.viewmodels.MainViewModel
@@ -98,6 +97,7 @@ class OTPConfirmation : Fragment(), View.OnClickListener {
         val prefs = requireContext().getSharedPreferences(PREFS_DIR, Context.MODE_PRIVATE)
         val editor = prefs.edit()
         editor.putBoolean(PREF_VERIFIED, true)
+        editor.putLong(PREF_NUMBER, viewModel.phonenumber)
         editor.apply()
         findNavController().navigate(R.id.action_OTPConfirmation_to_mainFragment)
     }

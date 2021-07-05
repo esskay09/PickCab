@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.terrranullius.pickcab.util.GenericApiResponse
-import com.terrranullius.pickcab.util.LiveDataCallAdapterFactory
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.Body

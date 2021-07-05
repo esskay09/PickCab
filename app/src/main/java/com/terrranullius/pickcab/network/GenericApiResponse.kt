@@ -1,4 +1,4 @@
-package com.terrranullius.pickcab.util
+package com.terrranullius.pickcab.network
 
 import android.util.Log
 import retrofit2.Response
