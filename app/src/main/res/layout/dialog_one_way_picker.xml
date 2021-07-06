@@ -14,23 +14,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/one_way_btn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:gravity="center_horizontal"
+            android:gravity="center"
             android:onClick="@{() -> viewModel.setOneWay(true)}"
-            android:text="One Way"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:text="Drop"
+            app:icon="@drawable/ic_one_way"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.31" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
+            app:icon="@drawable/ic_two_way"
             android:id="@+id/two_way_btn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -38,10 +39,9 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            android:gravity="center_horizontal"
+            android:gravity="center"
             android:onClick="@{() -> viewModel.setOneWay(false)}"
-            android:text="Two Way"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:text="Drop and return"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

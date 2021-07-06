@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_height="match_parent"
-android:layout_width="match_parent"
-   >
+
+    <androidx.constraintlayout.motion.widget.MotionLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layoutDescription="@xml/fragment_main_xml_constraintlayout_scene">
 
     <ImageView
         android:id="@+id/main_logo"
@@ -29,107 +31,106 @@ android:layout_width="match_parent"
         android:layout_marginStart="@dimen/dimen_input_destination_end"
         android:layout_marginEnd="@dimen/dimen_input_destination_start"
         android:hint="@string/start_destination"
+        android:textColorHint="@color/colorPrimary"
         app:layout_constraintBottom_toTopOf="@+id/input_end_destination"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:textColorHint="@color/colorPrimary"
-        app:startIconTint="@color/colorPrimary"
-        app:startIconDrawable="@drawable/ic_location_24">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:textColorHint="@color/colorPrimary"
-            android:textColor="@color/grey1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="text"
-            android:maxLines="1" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        app:startIconTint="@color/colorPrimary"
-        android:textColorHint="@color/colorPrimary"
-        android:id="@+id/input_end_destination"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="@string/end_destination"
-        app:layout_constraintBottom_toTopOf="@+id/book_cardview"
-        app:layout_constraintEnd_toEndOf="@id/input_start_destination"
-        app:layout_constraintStart_toStartOf="@id/input_start_destination"
         app:startIconDrawable="@drawable/ic_location_24"
-        app:startIconTintMode="src_in"
-        android:layout_marginBottom="20dp"
->
+        app:startIconTint="@color/colorPrimary">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:textColorHint="@color/colorPrimary"
-            android:textColor="@color/grey1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
-            android:maxLines="1" />
+            android:maxLines="1"
+            android:textColor="@color/grey1"
+            android:textColorHint="@color/colorPrimary" />
     </com.google.android.material.textfield.TextInputLayout>
 
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/book_cardview"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dimen_input_destination_start"
-        android:layout_marginEnd="@dimen/dimen_input_destination_end"
-        android:layout_marginBottom="24dp"
-        app:cardBackgroundColor="@color/colorPrimary"
-        app:cardCornerRadius="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintVertical_bias="0.65999997">
-        <Button
-            android:id="@+id/book_button"
-            android:layout_width="match_parent"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_end_destination"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/ripple_white"
-            android:text="Book now"
-            android:textSize="16sp"
-            android:padding="16dp"
-            android:textColor="@color/white" />
-    </androidx.cardview.widget.CardView>
+            android:layout_marginBottom="20dp"
+            android:hint="@string/end_destination"
+            android:textColorHint="@color/colorPrimary"
+            app:layout_constraintBottom_toTopOf="@+id/book_cardview"
+            app:layout_constraintEnd_toEndOf="@id/input_start_destination"
+            app:layout_constraintStart_toStartOf="@id/input_start_destination"
+            app:startIconDrawable="@drawable/ic_location_24"
+            app:startIconTint="@color/colorPrimary"
+            app:startIconTintMode="src_in">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="@color/grey1"
+                android:textColorHint="@color/colorPrimary" />
+        </com.google.android.material.textfield.TextInputLayout>
 
 
+        <androidx.cardview.widget.CardView
+            android:id="@+id/book_cardview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dimen_input_destination_start"
+            android:layout_marginEnd="@dimen/dimen_input_destination_end"
+            android:layout_marginBottom="24dp"
+            app:cardBackgroundColor="@color/colorPrimary"
+            app:cardCornerRadius="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_bias="0.65999997">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_contact_us_phone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dimen_contact_us_bottom_margin"
-        android:background="#00FFFFFF"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        app:icon="@drawable/ic_call_contact_last"
-        app:iconTint="?attr/colorSecondary"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.42"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/book_cardview"
-        app:layout_constraintVertical_bias="0.90999997"
-        android:visibility="gone"/>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_contact_us_whatsapp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="#00FFFFFF"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:textColor="?attr/colorSecondary"
-        app:icon="@drawable/ic_whatsapp_contact_last"
-        app:iconTint="?attr/colorSecondary"
-        app:layout_constraintBottom_toBottomOf="@id/btn_contact_us_phone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@id/btn_contact_us_phone"
-        app:layout_constraintTop_toTopOf="@id/btn_contact_us_phone"
-        app:layout_constraintVertical_bias="0.90999997"
-        android:visibility="gone"/>
+            <Button
+                android:id="@+id/book_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ripple_white"
+                android:padding="16dp"
+                android:text="Book now"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+        </androidx.cardview.widget.CardView>
 
 
-</androidx.constraintlayout.widget.ConstraintLayout></layout>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_contact_us_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_contact_us_bottom_margin"
+            android:background="#00FFFFFF"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:visibility="gone"
+            app:icon="@drawable/ic_call_contact_last"
+            app:iconTint="?attr/colorSecondary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.42"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/book_cardview"
+            app:layout_constraintVertical_bias="0.90999997" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_contact_us_whatsapp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#00FFFFFF"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="?attr/colorSecondary"
+            android:visibility="gone"
+            app:icon="@drawable/ic_whatsapp_contact_last"
+            app:iconTint="?attr/colorSecondary"
+            app:layout_constraintBottom_toBottomOf="@id/btn_contact_us_phone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@id/btn_contact_us_phone"
+            app:layout_constraintTop_toTopOf="@id/btn_contact_us_phone"
+            app:layout_constraintVertical_bias="0.90999997" />
+
+
+    </androidx.constraintlayout.motion.widget.MotionLayout>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+
+    <Transition
+        motion:constraintSetEnd="@+id/end"
+        motion:constraintSetStart="@id/start"
+        motion:duration="1000"
+        motion:autoTransition="animateToEnd"
+        motion:motionInterpolator="linear">
+    </Transition>
+
+    <ConstraintSet android:id="@+id/start">
+        <Constraint
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            motion:layout_constraintBottom_toTopOf="@+id/input_start_destination"
+            motion:layout_constraintVertical_bias="0"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:id="@+id/main_logo"
+            android:scaleX="0.5"
+            android:scaleY="0.5"
+            android:alpha="0.1" />
+        <Constraint
+            android:id="@+id/main_logo"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            motion:layout_constraintBottom_toTopOf="@+id/input_start_destination"
+            motion:layout_constraintVertical_bias="0.0"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:alpha="0" />
+        <Constraint
+            android:id="@+id/book_cardview"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="24dp"
+            motion:layout_constraintVertical_bias="0.65999997"
+            android:layout_marginEnd="@dimen/dimen_input_destination_end"
+            android:layout_marginStart="@dimen/dimen_input_destination_start"
+            motion:layout_constraintHorizontal_bias="0.0"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:translationY="150dp"
+            android:alpha="0.1" />
+        <Constraint
+            android:id="@+id/input_end_destination"
+            motion:layout_constraintEnd_toEndOf="@id/input_start_destination"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            motion:layout_constraintBottom_toTopOf="@+id/book_cardview"
+            motion:layout_constraintStart_toStartOf="@id/input_start_destination"
+            android:translationY="150dp"
+            android:alpha="0.1" />
+        <Constraint
+            android:id="@+id/input_start_destination"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            motion:layout_constraintBottom_toTopOf="@+id/input_end_destination"
+            android:layout_marginEnd="@dimen/dimen_input_destination_start"
+            android:layout_marginStart="@dimen/dimen_input_destination_end"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:translationY="150dp"
+            android:alpha="0.1" />
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/end">
+        <Constraint
+            android:id="@+id/main_logo"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            motion:layout_constraintBottom_toTopOf="@+id/input_start_destination"
+            motion:layout_constraintVertical_bias="0.19999999"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:alpha="1"
+            android:scaleX="1"
+            android:scaleY="1" />
+        <Constraint
+            android:id="@+id/main_logo"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            motion:layout_constraintBottom_toTopOf="@+id/input_start_destination"
+            motion:layout_constraintVertical_bias="0.19999999"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:alpha="1" />
+        <Constraint
+            android:id="@+id/input_start_destination"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            motion:layout_constraintBottom_toTopOf="@+id/input_end_destination"
+            android:layout_marginEnd="@dimen/dimen_input_destination_start"
+            android:layout_marginStart="@dimen/dimen_input_destination_end"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:alpha="1" />
+    </ConstraintSet>
+</MotionScene>

@@ -172,7 +172,9 @@ class MainViewModel : ViewModel() {
     }
 
     fun sendConfirmation() {
-          PickCabApi.retrofitService.sendConfirmation(
+        //TODO UNCOMMENT
+
+         /* PickCabApi.retrofitService.sendConfirmation(
               ConfirmationRequest(
                   number = phoneNumber.value!!,
                   startDate = startDate,
@@ -195,7 +197,7 @@ class MainViewModel : ViewModel() {
                   else -> {
                   }
               }
-          }
+          }*/
     }
 
 }
