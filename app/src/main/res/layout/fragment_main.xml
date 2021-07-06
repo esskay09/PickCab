@@ -33,6 +33,7 @@ android:layout_width="match_parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:textColorHint="@color/colorPrimary"
+        app:startIconTint="@color/colorPrimary"
         app:startIconDrawable="@drawable/ic_location_24">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -45,6 +46,7 @@ android:layout_width="match_parent"
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
+        app:startIconTint="@color/colorPrimary"
         android:textColorHint="@color/colorPrimary"
         android:id="@+id/input_end_destination"
         android:layout_width="0dp"
@@ -55,7 +57,7 @@ android:layout_width="match_parent"
         app:layout_constraintStart_toStartOf="@id/input_start_destination"
         app:startIconDrawable="@drawable/ic_location_24"
         app:startIconTintMode="src_in"
-        android:layout_marginBottom="25dp"
+        android:layout_marginBottom="20dp"
 >
 
         <com.google.android.material.textfield.TextInputEditText
@@ -108,7 +110,7 @@ android:layout_width="match_parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.42"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/book_button"
+        app:layout_constraintTop_toBottomOf="@+id/book_cardview"
         app:layout_constraintVertical_bias="0.90999997"
         android:visibility="gone"/>
 
