@@ -46,12 +46,6 @@ class BookingConfirmedFragment : Fragment() {
         setBookingDetails()
         viewModel.sendConfirmation()
 
-        lifecycleScope.launch(){
-                delay(200L)
-                tickAnimation()
-        }
-
-
         binding.finishButton.setOnClickListener {
             findNavController().navigate(R.id.action_bookingConfirmedFragment_to_mainFragment)
         }
@@ -66,15 +60,4 @@ class BookingConfirmedFragment : Fragment() {
         binding.pickupTimeDetailTv.text = viewModel.time
     }
 
-
-    private fun tickAnimation() {
-        val drawable = binding.tickAnimationView.drawable
-        if (drawable is AnimatedVectorDrawable) {
-            val anim = drawable as AnimatedVectorDrawable
-            anim.start()
-        } else if (drawable is AnimatedVectorDrawableCompat) {
-            val anim = drawable as AnimatedVectorDrawableCompat
-            anim.start()
-        }
     }
-}

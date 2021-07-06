@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Pick Cab</string>
+    <string name="app_name">Pickcab</string>
     <string name="main_log">main_log</string>
     <string name="start_destination">Start destination</string>
     <string name="end_destination">End destination</string>

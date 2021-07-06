@@ -118,20 +118,19 @@ class MainActivity : AppCompatActivity() {
 
         cameraLaunhcer = registerForActivityResult(ActivityResultContracts.TakePicturePreview()) {
 
-            btnDialog.show()
-
-            val byteArray = convertBitmapIntoByteArray(it)
-
-            try {
-                uploadIdentityImage(null, byteArray)
-            } catch (e: Exception){
-                Log.d("sha", "Error Uploading Image ${e.message}")
+            if (it!=null) {
+                btnDialog.show()
+                val byteArray = convertBitmapIntoByteArray(it)
+                try {
+                    uploadIdentityImage(null, byteArray)
+                } catch (e: Exception){
+                    Log.d("sha", "Error Uploading Image ${e.message}")
+                }
             }
-
         }
         imagePickerLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) {
 
-            btnDialog.show()
+            if (it!=null)btnDialog.show()
 
             var bytes : ByteArray? = null
 
@@ -213,7 +212,7 @@ class MainActivity : AppCompatActivity() {
                     findViewById<TiledProgressView>(R.id.pv_identity_upload)
                         .apply {
                             setColorRes(R.color.white)
-                            setLoadingColorRes(R.color.blue_primary_dark)
+                            setLoadingColorRes(R.color.colorPrimary)
                         }
                 }
 

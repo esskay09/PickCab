@@ -3,6 +3,7 @@ package com.terrranullius.pickcab.ui.fragments
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -33,23 +34,30 @@ class SplashFragment : Fragment() {
     }
 
     private val viewModel by activityViewModels<MainViewModel>()
+    private var isVerified = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val prefs = requireContext().getSharedPreferences(PREFS_DIR, Context.MODE_PRIVATE)
-        val isVerified = prefs.getBoolean(PREF_VERIFIED, false)
-        val taxiView = view.findViewById<LottieAnimationView>(R.id.taxiView)
+         isVerified = prefs.getBoolean(PREF_VERIFIED, false)
 
         if (isVerified){
             val userNumber = prefs.getLong(PREF_NUMBER, 9334805466)
             viewModel.setNumber(userNumber)
         }
+    }
 
+    override fun onResume() {
+        super.onResume()
         lifecycleScope.launch {
             delay(3000L)
-            if (!isVerified)findNavController().navigate(R.id.action_splashFragment_to_login)
-            else findNavController().navigate(R.id.action_splashFragment_to_mainFragment)
+           try {
+               if (!isVerified) findNavController().navigate(R.id.action_splashFragment_to_login)
+               else findNavController().navigate(R.id.action_splashFragment_to_mainFragment)
+           } catch (e: Exception){
+               Log.d("sha", "splash: ${e.message}")
+           }
         }
 
     }
