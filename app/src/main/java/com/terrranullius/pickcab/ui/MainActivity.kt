@@ -263,11 +263,6 @@ class MainActivity : AppCompatActivity() {
 
         }
     }
-
-    private fun extractOneTimePassword(message: String?): Any {
-        return 5
-    }
-
     private fun processNumber(id: String): Long {
         var number = 0L
         if (id.contains('+')){
@@ -277,7 +272,6 @@ class MainActivity : AppCompatActivity() {
         }
         return number
     }
-
 
     private val smsVerificationReceiver = object : BroadcastReceiver() {
           override fun onReceive(context: Context?, intent: Intent) {
