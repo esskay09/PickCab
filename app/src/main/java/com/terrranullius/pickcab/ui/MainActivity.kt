@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var btnDialog: BottomSheetDialog
     private lateinit var btmDialogLayout: View
-    private lateinit var cameraLaunhcer: ActivityResultLauncher<Void>
+    private lateinit var cameraLaunhcer: ActivityResultLauncher<Void?>
     private lateinit var imagePickerLauncher: ActivityResultLauncher<String>
 
 
@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun setObservers(){
+    private fun setObservers() {
         viewModel.getIdentityEvent.observe(this, EventObserver {
             when (it) {
                 CAMERA -> cameraLaunhcer.launch(null)
@@ -118,34 +118,36 @@ class MainActivity : AppCompatActivity() {
 
         cameraLaunhcer = registerForActivityResult(ActivityResultContracts.TakePicturePreview()) {
 
-            if (it!=null) {
+            if (it != null) {
                 btnDialog.show()
                 val byteArray = convertBitmapIntoByteArray(it)
                 try {
                     uploadIdentityImage(null, byteArray)
-                } catch (e: Exception){
+                } catch (e: Exception) {
                     Log.d("sha", "Error Uploading Image ${e.message}")
                 }
             }
         }
         imagePickerLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) {
+            if (it == null) return@registerForActivityResult
+            btnDialog.show()
 
-            if (it!=null)btnDialog.show()
-
-            var bytes : ByteArray? = null
+            var bytes: ByteArray? = null
 
             try {
-                contentResolver.openInputStream(it)?.readBytes()?.let { byteArray -> bytes = compressImage(
-                    byteArray
-                ) } ?:  Log.d("Pickcab", "Error Compressing Image byteArray NUll")
-            } catch (e: Exception){
+                contentResolver.openInputStream(it)?.readBytes()?.let { byteArray ->
+                    bytes = compressImage(
+                        byteArray
+                    )
+                } ?: Log.d("Pickcab", "Error Compressing Image byteArray NUll")
+            } catch (e: Exception) {
                 Log.d("sha", "Error Compressing Image ${e.message}")
             }
             try {
                 bytes?.let { byteArray ->
                     uploadIdentityImage(null, byteArray)
-                }?: uploadIdentityImage(it, null)
-            } catch (e: Exception){
+                } ?: uploadIdentityImage(it, null)
+            } catch (e: Exception) {
                 Log.d("sha", "Error Uploading Image ${e.message}")
             }
 
@@ -168,9 +170,10 @@ class MainActivity : AppCompatActivity() {
         byteArray: ByteArray? = null
     ) {
 
-        val generateName = SimpleDateFormat.getInstance().format(System.currentTimeMillis()).substringAfterLast(
-            "/"
-        )
+        val generateName =
+            SimpleDateFormat.getInstance().format(System.currentTimeMillis()).substringAfterLast(
+                "/"
+            )
         val firebaseRef = firebaseStorage.reference
         fileRef = firebaseRef.child("proof_images/$generateName")
 
@@ -222,8 +225,8 @@ class MainActivity : AppCompatActivity() {
     private fun compressImage(inputArray: ByteArray): ByteArray {
         val bmp = BitmapFactory.decodeByteArray(inputArray, 0, inputArray.size)
 
-        val quality = if(bmp.byteCount > 1024 * 1024 * 20){
-            ((1024 * 1024 * 20)/bmp.byteCount.toFloat()) * 100f
+        val quality = if (bmp.byteCount > 1024 * 1024 * 20) {
+            ((1024 * 1024 * 20) / bmp.byteCount.toFloat()) * 100f
         } else 100
 
 
@@ -263,31 +266,33 @@ class MainActivity : AppCompatActivity() {
 
         }
     }
+
     private fun processNumber(id: String): Long {
         var number = 0L
-        if (id.contains('+')){
+        if (id.contains('+')) {
             number = id.substring(3).replace("-", "").replace(" ", "").toLongOrNull() ?: 0L
-        } else if (id.startsWith('0')){
+        } else if (id.startsWith('0')) {
             number = id.substring(1).replace("-", "").replace(" ", "").toLongOrNull() ?: 0L
         }
         return number
     }
 
     private val smsVerificationReceiver = object : BroadcastReceiver() {
-          override fun onReceive(context: Context?, intent: Intent) {
-              if (SmsRetriever.SMS_RETRIEVED_ACTION == intent.action) {
-                  val extras = intent.extras
-                  val status = extras!![SmsRetriever.EXTRA_STATUS] as Status?
-                  when (status!!.statusCode) {
-                      CommonStatusCodes.SUCCESS ->{
-                          val message = extras[SmsRetriever.EXTRA_SMS_MESSAGE] as String? //message from sms
-                          Log.d("sha", "SMS $message")
-                      }
-                      CommonStatusCodes.TIMEOUT -> {
-                      }
-                  }
-              }
-          }
+        override fun onReceive(context: Context?, intent: Intent) {
+            if (SmsRetriever.SMS_RETRIEVED_ACTION == intent.action) {
+                val extras = intent.extras
+                val status = extras!![SmsRetriever.EXTRA_STATUS] as Status?
+                when (status!!.statusCode) {
+                    CommonStatusCodes.SUCCESS -> {
+                        val message =
+                            extras[SmsRetriever.EXTRA_SMS_MESSAGE] as String? //message from sms
+                        Log.d("sha", "SMS $message")
+                    }
+                    CommonStatusCodes.TIMEOUT -> {
+                    }
+                }
+            }
+        }
     }
 
 

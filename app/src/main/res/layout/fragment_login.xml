@@ -48,6 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="8dp"
+            android:background="@android:color/transparent"
             android:id="@+id/mobile_input_layout"
             android:textColorHint="@color/colorPrimary"
             android:layout_marginTop="64dp">
@@ -55,6 +56,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Enter Mobile Number"
+                android:background="#B1B1B1"
                 android:textColorHint="@color/colorPrimary"
                 android:textColor="@color/grey1"
                 android:inputType="phone"
