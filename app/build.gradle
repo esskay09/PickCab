@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-kapt'
     id 'androidx.navigation.safeargs.kotlin'
     id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
 }
 
 android {
@@ -67,6 +68,8 @@ dependencies {
     //Firebase
     implementation platform ('com.google.firebase:firebase-bom:26.7.0')
     implementation 'com.google.firebase:firebase-storage-ktx'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
+    implementation 'com.google.firebase:firebase-analytics-ktx'
 
     //ProgressView
     implementation 'com.github.iammert:TileProgressView:0.1'
