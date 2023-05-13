@@ -11,7 +11,7 @@ import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
 
-private const val BASE_URL = "https://pickcab.herokuapp.com/"
+private const val BASE_URL = "https://node-pickcab-production.up.railway.app/"
 
 private val moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
